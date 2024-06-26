@@ -36,7 +36,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update a booking by ID
-router.put('/:id', async (req, res) => {
+router.post('/:id', async (req, res) => {
   try {
     const booking = await bookingService.updateBookingById(req.params.id, req.body);
     if (!booking) {
@@ -49,7 +49,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete a booking by ID
-router.delete('/:id', async (req, res) => {
+router.post('/:id', async (req, res) => {
   try {
     const booking = await bookingService.deleteBookingById(req.params.id);
     if (!booking) {

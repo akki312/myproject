@@ -36,7 +36,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update a customer by ID
-router.put('/:id', async (req, res) => {
+router.post('/:id', async (req, res) => {
   try {
     const customer = await customerService.updateCustomerById(req.params.id, req.body);
     if (!customer) {
@@ -49,7 +49,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete a customer by ID
-router.delete('/:id', async (req, res) => {
+router.post('/:id', async (req, res) => {
   try {
     const customer = await customerService.deleteCustomerById(req.params.id);
     if (!customer) {

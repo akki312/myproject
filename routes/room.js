@@ -36,7 +36,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update a room by ID
-router.put('/:id', async (req, res) => {
+router.post('/:id', async (req, res) => {
   try {
     const room = await roomService.updateRoomById(req.params.id, req.body);
     if (!room) {
@@ -49,7 +49,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete a room by ID
-router.delete('/:id', async (req, res) => {
+router.post('/:id', async (req, res) => {
   try {
     const room = await roomService.deleteRoomById(req.params.id);
     if (!room) {
