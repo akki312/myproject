@@ -3,7 +3,7 @@ const router = express.Router();
 const bookingService = require('../services/bookingservice');
 
 // Create a new booking
-router.post('/', async (req, res) => {
+router.post('/newbooking', async (req, res) => {
   try {
     const booking = await bookingService.createBooking(req.body);
     res.status(201).json(booking);
@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
 });
 
 // Get all bookings
-router.get('/', async (req, res) => {
+router.get('/allbookings', async (req, res) => {
   try {
     const bookings = await bookingService.getAllBookings();
     res.status(200).json(bookings);
@@ -47,7 +47,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update a booking
-router.put('/:id', async (req, res) => {
+router.post('/:id', async (req, res) => {
   try {
     const booking = await bookingService.updateBooking(req.params.id, req.body);
     if (!booking) {
@@ -60,7 +60,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete a booking
-router.delete('/:id', async (req, res) => {
+router.post('/:id', async (req, res) => {
   try {
     await bookingService.deleteBooking(req.params.id);
     res.status(204).send();

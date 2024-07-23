@@ -1,2 +1,4 @@
 2024-07-23 16:47:10 [32minfo[39m: Retrieved all bookings
 2024-07-23 16:47:37 [32minfo[39m: Booking created: {"customerName":"John Doe","roomNumber":101,"checkInDate":"2024-08-01T14:00:00.000Z","checkOutDate":"2024-08-07T11:00:00.000Z","status":"Confirmed","totalAmount":500,"paymentStatus":"Pending","_id":"669f915119604a0f423a3b24","createdAt":"2024-07-23T11:17:37.542Z","updatedAt":"2024-07-23T11:17:37.542Z","__v":0}
+2024-07-23 18:29:44 [32minfo[39m: Booking created: {"customerName":"John Doe","roomNumber":101,"checkInDate":"2024-08-01T14:00:00.000Z","checkOutDate":"2024-08-07T11:00:00.000Z","status":"Confirmed","totalAmount":500,"paymentStatus":"Pending","_id":"669fa940fb63aa0c8338a7ac","createdAt":"2024-07-23T12:59:44.359Z","updatedAt":"2024-07-23T12:59:44.359Z","__v":0}
+2024-07-23 18:29:50 [32minfo[39m: Retrieved all bookings
