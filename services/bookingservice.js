@@ -1,36 +1,74 @@
 const Booking = require('../models/booking');
+const io = require('socket.io-client'); // Client-side Socket.io
+const socket = io('http://localhost:3000'); // Connect to the WebSocket server
 
 // Create a new booking
-const createBooking = async (data) => {
-  const booking = new Booking(data);
-  await booking.save();
-  return booking;
-};
+async function createBooking(data) {
+  try {
+    const booking = new Booking(data);
+    await booking.save();
+    socket.emit('bookingUpdated', booking); // Notify clients of the new booking
+    return booking;
+  } catch (error) {
+    throw new Error('Error creating booking: ' + error.message);
+  }
+}
 
 // Get all bookings
-const getAllBookings = async () => {
-  return await Booking.find().populate('customer').populate('room');
-};
+async function getAllBookings() {
+  try {
+    return await Booking.find();
+  } catch (error) {
+    throw new Error('Error retrieving bookings: ' + error.message);
+  }
+}
 
-// Get a booking by ID
-const getBookingById = async (id) => {
-  return await Booking.findById(id).populate('customer').populate('room');
-};
+// Get bookings by status
+async function getBookingsByStatus(status) {
+  try {
+    return await Booking.find({ status });
+  } catch (error) {
+    throw new Error('Error retrieving bookings by status: ' + error.message);
+  }
+}
 
-// Update a booking by ID
-const updateBookingById = async (id, data) => {
-  return await Booking.findByIdAndUpdate(id, data, { new: true, runValidators: true });
-};
+// Get a single booking by ID
+async function getBookingById(id) {
+  try {
+    return await Booking.findById(id);
+  } catch (error) {
+    throw new Error('Error retrieving booking: ' + error.message);
+  }
+}
 
-// Delete a booking by ID
-const deleteBookingById = async (id) => {
-  return await Booking.findByIdAndDelete(id);
-};
+// Update a booking
+async function updateBooking(id, updateData) {
+  try {
+    const updatedBooking = await Booking.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
+    if (updatedBooking) {
+      socket.emit('bookingUpdated', updatedBooking); // Notify clients of the updated booking
+    }
+    return updatedBooking;
+  } catch (error) {
+    throw new Error('Error updating booking: ' + error.message);
+  }
+}
+
+// Delete a booking
+async function deleteBooking(id) {
+  try {
+    await Booking.findByIdAndDelete(id);
+    socket.emit('bookingDeleted', { id }); // Notify clients of the deleted booking
+  } catch (error) {
+    throw new Error('Error deleting booking: ' + error.message);
+  }
+}
 
 module.exports = {
   createBooking,
   getAllBookings,
+  getBookingsByStatus,
   getBookingById,
-  updateBookingById,
-  deleteBookingById
+  updateBooking,
+  deleteBooking
 };

@@ -8,7 +8,7 @@ router.post('/', async (req, res) => {
     const booking = await bookingService.createBooking(req.body);
     res.status(201).json(booking);
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -16,77 +16,54 @@ router.post('/', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const bookings = await bookingService.getAllBookings();
-    res.json(bookings);
+    res.status(200).json(bookings);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-// Get a booking by ID
+// Get bookings by status
+router.get('/status/:status', async (req, res) => {
+  try {
+    const { status } = req.params;
+    const bookings = await bookingService.getBookingsByStatus(status);
+    res.status(200).json(bookings);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Get a single booking by ID
 router.get('/:id', async (req, res) => {
   try {
     const booking = await bookingService.getBookingById(req.params.id);
     if (!booking) {
       return res.status(404).json({ message: 'Booking not found' });
     }
-    res.json(booking);
+    res.status(200).json(booking);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-// Update a booking by ID
-router.post('/:id', async (req, res) => {
+// Update a booking
+router.put('/:id', async (req, res) => {
   try {
-    const booking = await bookingService.updateBookingById(req.params.id, req.body);
+    const booking = await bookingService.updateBooking(req.params.id, req.body);
     if (!booking) {
       return res.status(404).json({ message: 'Booking not found' });
     }
-    res.json(booking);
-  } catch (error) {
-    res.status(400).json({ message: error.message });
-  }
-});
-
-// Delete a booking by ID
-router.post('/:id', async (req, res) => {
-  try {
-    const booking = await bookingService.deleteBookingById(req.params.id);
-    if (!booking) {
-      return res.status(404).json({ message: 'Booking not found' });
-    }
-    res.json({ message: 'Booking deleted' });
+    res.status(200).json(booking);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-// Get booking statistics
-router.get('/stats', async (req, res) => {
+// Delete a booking
+router.delete('/:id', async (req, res) => {
   try {
-    const stats = await bookingService.getBookingStatistics();
-    res.json(stats);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// Get bookings by date range
-router.get('/range/:startDate/:endDate', async (req, res) => {
-  try {
-    const { startDate, endDate } = req.params;
-    const bookings = await bookingService.getBookingsByDateRange(startDate, endDate);
-    res.json(bookings);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-// Get revenue by month
-router.get('/revenue/monthly', async (req, res) => {
-  try {
-    const revenue = await bookingService.getRevenueByMonth();
-    res.json(revenue);
+    await bookingService.deleteBooking(req.params.id);
+    res.status(204).send();
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
