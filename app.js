@@ -6,6 +6,7 @@ const connectDB = require('../my project/loaders/mongoose');
 const bookingRoutes = require('./routes/bookingroutes');
 const roomRoutes = require('./routes/room')
 const customerRoutes = require('./routes/customer'); // Assuming you have a route file for rooms
+const logger = require('./loaders/logger')
 
 const app = express();
 const server = http.createServer(app);

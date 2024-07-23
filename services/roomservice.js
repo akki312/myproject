@@ -1,6 +1,7 @@
 const Room = require('../models/room');
-const io = require('socket.io-client'); // Client-side Socket.io
-const socket = io('http://localhost:3000'); // Connect to the WebSocket server
+const io = require('socket.io-client');
+const socket = io('http://localhost:3000');
+const logger = require('../loaders/logger'); // Import the logger
 
 // Create a new room
 const createRoom = async (data) => {
@@ -8,8 +9,10 @@ const createRoom = async (data) => {
     const room = new Room(data);
     await room.save();
     socket.emit('roomCreated', room); // Notify clients of the new room
+    logger.info(`Room created: ${room}`);
     return room;
   } catch (error) {
+    logger.error('Error creating room: ' + error.message);
     throw new Error('Error creating room: ' + error.message);
   }
 };
@@ -19,6 +22,7 @@ const getAllRooms = async () => {
   try {
     return await Room.find();
   } catch (error) {
+    logger.error('Error retrieving rooms: ' + error.message);
     throw new Error('Error retrieving rooms: ' + error.message);
   }
 };
@@ -28,6 +32,7 @@ const getRoomById = async (id) => {
   try {
     return await Room.findById(id);
   } catch (error) {
+    logger.error('Error retrieving room: ' + error.message);
     throw new Error('Error retrieving room: ' + error.message);
   }
 };
@@ -38,9 +43,11 @@ const updateRoomById = async (id, data) => {
     const updatedRoom = await Room.findByIdAndUpdate(id, data, { new: true, runValidators: true });
     if (updatedRoom) {
       socket.emit('roomUpdated', updatedRoom); // Notify clients of the updated room
+      logger.info(`Room updated: ${updatedRoom}`);
     }
     return updatedRoom;
   } catch (error) {
+    logger.error('Error updating room: ' + error.message);
     throw new Error('Error updating room: ' + error.message);
   }
 };
@@ -50,7 +57,9 @@ const deleteRoomById = async (id) => {
   try {
     await Room.findByIdAndDelete(id);
     socket.emit('roomDeleted', { id }); // Notify clients of the deleted room
+    logger.info(`Room deleted: ${id}`);
   } catch (error) {
+    logger.error('Error deleting room: ' + error.message);
     throw new Error('Error deleting room: ' + error.message);
   }
 };
@@ -60,6 +69,7 @@ const getRoomsByStatus = async (status) => {
   try {
     return await Room.find({ status });
   } catch (error) {
+    logger.error('Error retrieving rooms by status: ' + error.message);
     throw new Error('Error retrieving rooms by status: ' + error.message);
   }
 };
@@ -69,6 +79,7 @@ const getAvailableRooms = async () => {
   try {
     return await Room.find({ status: 'Available' });
   } catch (error) {
+    logger.error('Error retrieving available rooms: ' + error.message);
     throw new Error('Error retrieving available rooms: ' + error.message);
   }
 };
@@ -78,6 +89,7 @@ const updateRoomStatuses = async (ids, status) => {
   try {
     return await Room.updateMany({ _id: { $in: ids } }, { status }, { new: true, runValidators: true });
   } catch (error) {
+    logger.error('Error updating room statuses: ' + error.message);
     throw new Error('Error updating room statuses: ' + error.message);
   }
 };
