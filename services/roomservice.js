@@ -27,10 +27,28 @@ const deleteRoomById = async (id) => {
   return await Room.findByIdAndDelete(id);
 };
 
+// Get rooms by status
+const getRoomsByStatus = async (status) => {
+  return await Room.find({ status });
+};
+
+// Get available rooms
+const getAvailableRooms = async () => {
+  return await Room.find({ status: 'Available' });
+};
+
+// Update room statuses in bulk
+const updateRoomStatuses = async (ids, status) => {
+  return await Room.updateMany({ _id: { $in: ids } }, { status }, { new: true, runValidators: true });
+};
+
 module.exports = {
   createRoom,
   getAllRooms,
   getRoomById,
   updateRoomById,
-  deleteRoomById
+  deleteRoomById,
+  getRoomsByStatus,
+  getAvailableRooms,
+  updateRoomStatuses
 };
