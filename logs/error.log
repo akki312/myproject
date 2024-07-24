@@ -1,0 +1,1 @@
+2024-07-24 11:06:38 [31merror[39m: Error updating booking: Cast to ObjectId failed for value "newbookings" (type string) at path "_id" for model "Booking"
