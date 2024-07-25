@@ -3,6 +3,8 @@ const http = require('http');
 const socketIo = require('socket.io');
 const mongoose = require('mongoose');
 const bookingRoutes = require('../my project/routes/bookingroutes');
+const roomRoutes = require('./routes/room');
+const customerRoutes = require('./routes/customer');
 const Booking = require('./models/booking');
 
 const app = express();
@@ -12,6 +14,8 @@ const io = socketIo(server);
 // Middleware and other setup
 app.use(express.json());
 app.use('/api/bookings', bookingRoutes);
+app.use('/api/room', roomRoutes);
+app.use('/api/customer', customerRoutes);
 
 // WebSocket connection handler
 io.on('connection', (socket) => {
