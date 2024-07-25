@@ -34,7 +34,7 @@ router.get('/status/:status', async (req, res) => {
 });
 
 // Get a single booking by ID
-router.get('/:id', async (req, res) => {
+router.get('/getsinglebyid', async (req, res) => {
   try {
     const booking = await bookingService.getBookingById(req.params.id);
     if (!booking) {
@@ -47,7 +47,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update a booking
-router.post('/:id', async (req, res) => {
+router.post('/updatebyid', async (req, res) => {
   try {
     const booking = await bookingService.updateBooking(req.params.id, req.body);
     if (!booking) {
@@ -60,7 +60,7 @@ router.post('/:id', async (req, res) => {
 });
 
 // Delete a booking
-router.post('/:id', async (req, res) => {
+router.post('/deletebyid', async (req, res) => {
   try {
     await bookingService.deleteBooking(req.params.id);
     res.status(204).send();
