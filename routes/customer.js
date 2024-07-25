@@ -61,4 +61,18 @@ router.post('/:id', async (req, res) => {
   }
 });
 
+router.get('/age-range/:minAge/:maxAge', async (req, res) => {
+  try {
+    const { minAge, maxAge } = req.params;
+    const customers = await customerService.getCustomersByAgeRange(parseInt(minAge), parseInt(maxAge));
+    res.status(200).json(customers);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+
+
+
 module.exports = router;
