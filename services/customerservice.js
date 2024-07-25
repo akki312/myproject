@@ -1,7 +1,7 @@
 const Customer = require('../models/customer');
 const io = require('socket.io-client'); // Client-side Socket.io
 const socket = io('http://localhost:3000'); // Connect to the WebSocket server
-const logger = require('../loaders/mongoose'); // Import the logger
+const logger = require('../loaders/logger'); // Import the logger
 
 // Create a new customer
 const createCustomer = async (data) => {
