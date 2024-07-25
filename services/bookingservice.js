@@ -3,13 +3,31 @@ const io = require('socket.io-client'); // Client-side Socket.io
 const socket = io('http://localhost:3000'); // Connect to the WebSocket server
 const logger = require('../loaders/logger'); // Import the logger
 
+// Buffer to store booking updates
+let bookingBuffer = [];
+const BUFFER_SIZE = 5; // Set the buffer size
+
+// Function to emit updates in batches
+function emitBufferedUpdates() {
+  if (bookingBuffer.length > 0) {
+    socket.emit('bookingBatchUpdated', bookingBuffer); // Emit the buffered updates
+    logger.info(`Batch booking updates: ${JSON.stringify(bookingBuffer)}`);
+    bookingBuffer = []; // Clear the buffer
+  }
+}
+
 // Create a new booking
 async function createBooking(data) {
   try {
     const booking = new Booking(data);
     await booking.save();
-    socket.emit('bookingUpdated', booking); // Notify clients of the new booking
+    bookingBuffer.push(booking);
     logger.info(`Booking created: ${JSON.stringify(booking)}`);
+
+    if (bookingBuffer.length >= BUFFER_SIZE) {
+      emitBufferedUpdates();
+    }
+    
     return booking;
   } catch (error) {
     logger.error('Error creating booking: ' + error.message);
@@ -58,8 +76,12 @@ async function updateBooking(id, updateData) {
   try {
     const updatedBooking = await Booking.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
     if (updatedBooking) {
-      socket.emit('bookingUpdated', updatedBooking); // Notify clients of the updated booking
+      bookingBuffer.push(updatedBooking);
       logger.info(`Booking updated: ${JSON.stringify(updatedBooking)}`);
+
+      if (bookingBuffer.length >= BUFFER_SIZE) {
+        emitBufferedUpdates();
+      }
     }
     return updatedBooking;
   } catch (error) {
@@ -72,13 +94,20 @@ async function updateBooking(id, updateData) {
 async function deleteBooking(id) {
   try {
     await Booking.findByIdAndDelete(id);
-    socket.emit('bookingDeleted', { id }); // Notify clients of the deleted booking
+    bookingBuffer.push({ id, deleted: true });
     logger.info(`Booking deleted with ID: ${id}`);
+
+    if (bookingBuffer.length >= BUFFER_SIZE) {
+        emitBufferedUpdates();
+    }
   } catch (error) {
     logger.error('Error deleting booking: ' + error.message);
     throw new Error('Error deleting booking: ' + error.message);
   }
 }
+
+// Set an interval to emit any remaining updates in the buffer
+setInterval(emitBufferedUpdates, 5000); // Adjust the interval as needed
 
 module.exports = {
   createBooking,

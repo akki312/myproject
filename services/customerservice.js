@@ -3,13 +3,31 @@ const io = require('socket.io-client'); // Client-side Socket.io
 const socket = io('http://localhost:3000'); // Connect to the WebSocket server
 const logger = require('../loaders/logger'); // Import the logger
 
+// Buffer to store customer updates
+let customerBuffer = [];
+const BUFFER_SIZE = 5; // Set the buffer size
+
+// Function to emit updates in batches
+function emitBufferedUpdates() {
+  if (customerBuffer.length > 0) {
+    socket.emit('customerBatchUpdated', customerBuffer); // Emit the buffered updates
+    logger.info(`Batch customer updates: ${JSON.stringify(customerBuffer)}`);
+    customerBuffer = []; // Clear the buffer
+  }
+}
+
 // Create a new customer
 const createCustomer = async (data) => {
   try {
     const customer = new Customer(data);
     await customer.save();
-    socket.emit('customerCreated', customer); // Notify clients of the new customer
+    customerBuffer.push(customer);
     logger.info(`Customer created: ${JSON.stringify(customer)}`);
+
+    if (customerBuffer.length >= BUFFER_SIZE) {
+      emitBufferedUpdates();
+    }
+    
     return customer;
   } catch (error) {
     logger.error('Error creating customer: ' + error.message);
@@ -21,7 +39,7 @@ const createCustomer = async (data) => {
 const getAllCustomers = async () => {
   try {
     const customers = await Customer.find();
-    logger.info(`Retrieved all customers`);
+    logger.info('Retrieved all customers');
     return customers;
   } catch (error) {
     logger.error('Error retrieving customers: ' + error.message);
@@ -46,8 +64,12 @@ const updateCustomerById = async (id, data) => {
   try {
     const updatedCustomer = await Customer.findByIdAndUpdate(id, data, { new: true, runValidators: true });
     if (updatedCustomer) {
-      socket.emit('customerUpdated', updatedCustomer); // Notify clients of the updated customer
+      customerBuffer.push(updatedCustomer);
       logger.info(`Customer updated: ${JSON.stringify(updatedCustomer)}`);
+
+      if (customerBuffer.length >= BUFFER_SIZE) {
+        emitBufferedUpdates();
+      }
     }
     return updatedCustomer;
   } catch (error) {
@@ -60,8 +82,12 @@ const updateCustomerById = async (id, data) => {
 const deleteCustomerById = async (id) => {
   try {
     await Customer.findByIdAndDelete(id);
-    socket.emit('customerDeleted', { id }); // Notify clients of the deleted customer
+    customerBuffer.push({ id, deleted: true });
     logger.info(`Customer deleted with ID: ${id}`);
+
+    if (customerBuffer.length >= BUFFER_SIZE) {
+      emitBufferedUpdates();
+    }
   } catch (error) {
     logger.error('Error deleting customer: ' + error.message);
     throw new Error('Error deleting customer: ' + error.message);
@@ -107,6 +133,9 @@ const getCustomersGroupedByCity = async () => {
     throw new Error('Error retrieving customers grouped by city: ' + error.message);
   }
 };
+
+// Set an interval to emit any remaining updates in the buffer
+setInterval(emitBufferedUpdates, 5000); // Adjust the interval as needed
 
 module.exports = {
   createCustomer,
