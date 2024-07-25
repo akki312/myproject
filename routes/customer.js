@@ -72,6 +72,15 @@ router.get('/age-range/:minAge/:maxAge', async (req, res) => {
 });
 
 
+router.get('/group-by-city', async (req, res) => {
+  try {
+    const customersGroupedByCity = await customerService.getCustomersGroupedByCity();
+    res.status(200).json(customersGroupedByCity);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 
 
 
