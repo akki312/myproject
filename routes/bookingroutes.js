@@ -6,6 +6,7 @@ const bookingService = require('../services/bookingservice');
 router.post('/newbooking', async (req, res) => {
   try {
     const booking = await bookingService.createBooking(req.body);
+    req.io.emit('bookingCreated', booking); // Notify clients of the new booking
     res.status(201).json(booking);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -34,7 +35,7 @@ router.get('/status/:status', async (req, res) => {
 });
 
 // Get a single booking by ID
-router.get('/getsinglebyid', async (req, res) => {
+router.get('/getsinglebyid/:id', async (req, res) => { // Corrected the route
   try {
     const booking = await bookingService.getBookingById(req.params.id);
     if (!booking) {
@@ -47,12 +48,13 @@ router.get('/getsinglebyid', async (req, res) => {
 });
 
 // Update a booking
-router.post('/updatebyid', async (req, res) => {
+router.post('/updatebyid/:id', async (req, res) => { // Corrected the route
   try {
     const booking = await bookingService.updateBooking(req.params.id, req.body);
     if (!booking) {
       return res.status(404).json({ message: 'Booking not found' });
     }
+    req.io.emit('bookingUpdated', booking); // Notify clients of the updated booking
     res.status(200).json(booking);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -60,9 +62,10 @@ router.post('/updatebyid', async (req, res) => {
 });
 
 // Delete a booking
-router.post('/deletebyid', async (req, res) => {
+router.post('/deletebyid/:id', async (req, res) => { // Corrected the route
   try {
     await bookingService.deleteBooking(req.params.id);
+    req.io.emit('bookingDeleted', { id: req.params.id }); // Notify clients of the deleted booking
     res.status(204).send();
   } catch (error) {
     res.status(500).json({ message: error.message });
