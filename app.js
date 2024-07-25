@@ -2,7 +2,7 @@
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
-const connectDB = require('../my project/loaders/mongoose');
+const connectDB = require('./loaders/mongoose');
 const bookingRoutes = require('./routes/bookingroutes');
 const roomRoutes = require('./routes/room')
 const customerRoutes = require('./routes/customer'); // Assuming you have a route file for rooms
