@@ -42,7 +42,7 @@ io.on('connection', (socket) => {
 // Connect to MongoDB and start the server
 mongoose.connect('mongodb://localhost:27017/bookingDB', { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
-    server.listen(3000, () => {
+    server.listen(3001, () => {
       console.log('Server is running on port 3000');
     });
   })
