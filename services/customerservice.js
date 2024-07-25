@@ -68,10 +68,53 @@ const deleteCustomerById = async (id) => {
   }
 };
 
+// Get customers by age range
+const getCustomersByAgeRange = async (minAge, maxAge) => {
+  try {
+    const customers = await Customer.aggregate([
+      { $match: { age: { $gte: minAge, $lte: maxAge } } }
+    ]);
+    logger.info(`Retrieved customers by age range: ${minAge} - ${maxAge}`);
+    return customers;
+  } catch (error) {
+    logger.error('Error retrieving customers by age range: ' + error.message);
+    throw new Error('Error retrieving customers by age range: ' + error.message);
+  }
+};
+
+// Get total number of customers
+const getTotalCustomers = async () => {
+  try {
+    const total = await Customer.countDocuments();
+    logger.info(`Total number of customers: ${total}`);
+    return total;
+  } catch (error) {
+    logger.error('Error retrieving total number of customers: ' + error.message);
+    throw new Error('Error retrieving total number of customers: ' + error.message);
+  }
+};
+
+// Get customers grouped by city
+const getCustomersGroupedByCity = async () => {
+  try {
+    const customersGrouped = await Customer.aggregate([
+      { $group: { _id: '$city', count: { $sum: 1 } } }
+    ]);
+    logger.info('Retrieved customers grouped by city');
+    return customersGrouped;
+  } catch (error) {
+    logger.error('Error retrieving customers grouped by city: ' + error.message);
+    throw new Error('Error retrieving customers grouped by city: ' + error.message);
+  }
+};
+
 module.exports = {
   createCustomer,
   getAllCustomers,
   getCustomerById,
   updateCustomerById,
-  deleteCustomerById
+  deleteCustomerById,
+  getCustomersByAgeRange,
+  getTotalCustomers,
+  getCustomersGroupedByCity
 };
