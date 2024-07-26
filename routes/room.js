@@ -3,7 +3,7 @@ const router = express.Router();
 const roomService = require('../services/roomservice');
 
 // Create a new room
-router.post('/', async (req, res) => {
+router.post('/creationofnewroom', async (req, res) => {
   try {
     const room = await roomService.createRoom(req.body);
     res.status(201).json(room);
@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
 });
 
 // Get all rooms
-router.get('/', async (req, res) => {
+router.get('/allroomsdata', async (req, res) => {
   try {
     const rooms = await roomService.getAllRooms();
     res.status(200).json(rooms);
@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
 });
 
 // Get a room by ID
-router.get('/:id', async (req, res) => {
+router.get('/roominfobyid', async (req, res) => {
   try {
     const room = await roomService.getRoomById(req.params.id);
     if (!room) {
@@ -36,7 +36,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update a room by ID
-router.put('/:id', async (req, res) => {
+router.post('/oneroominfobyid', async (req, res) => {
   try {
     const room = await roomService.updateRoomById(req.params.id, req.body);
     if (!room) {
@@ -49,7 +49,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete a room by ID
-router.delete('/:id', async (req, res) => {
+router.post('/deletearoombyid', async (req, res) => {
   try {
     await roomService.deleteRoomById(req.params.id);
     res.status(204).send();
@@ -79,7 +79,7 @@ router.get('/availability/available', async (req, res) => {
 });
 
 // Update room statuses in bulk
-router.put('/bulk/status', async (req, res) => {
+router.post('/bulk/status', async (req, res) => {
   try {
     const { ids, status } = req.body;
     const updatedRooms = await roomService.updateRoomStatuses(ids, status);

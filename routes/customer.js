@@ -3,7 +3,7 @@ const router = express.Router();
 const customerService = require('../services/customerservice');
 
 // Create a new customer
-router.post('/', async (req, res) => {
+router.post('/create a new customer', async (req, res) => {
   try {
     const customer = await customerService.createCustomer(req.body);
     res.status(201).json(customer);
@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
 });
 
 // Get all customers
-router.get('/', async (req, res) => {
+router.get('/all customers', async (req, res) => {
   try {
     const customers = await customerService.getAllCustomers();
     res.json(customers);
@@ -23,7 +23,7 @@ router.get('/', async (req, res) => {
 });
 
 // Get a customer by ID
-router.get('/:id', async (req, res) => {
+router.get('/getcustomerbyid', async (req, res) => {
   try {
     const customer = await customerService.getCustomerById(req.params.id);
     if (!customer) {
@@ -36,7 +36,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update a customer by ID
-router.post('/:id', async (req, res) => {
+router.post('/updatebyid', async (req, res) => {
   try {
     const customer = await customerService.updateCustomerById(req.params.id, req.body);
     if (!customer) {
@@ -49,7 +49,7 @@ router.post('/:id', async (req, res) => {
 });
 
 // Delete a customer by ID
-router.post('/:id', async (req, res) => {
+router.post('/deletebyid', async (req, res) => {
   try {
     const customer = await customerService.deleteCustomerById(req.params.id);
     if (!customer) {

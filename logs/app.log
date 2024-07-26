@@ -11,3 +11,7 @@
 2024-07-26 13:05:12 [32minfo[39m: Connected to WebSocket server
 2024-07-26 13:06:05 [32minfo[39m: Booking created: {"customerName":"John Doe","roomNumber":101,"checkInDate":"2024-08-01T14:00:00.000Z","checkOutDate":"2024-08-07T11:00:00.000Z","status":"Confirmed","totalAmount":500,"paymentStatus":"Pending","_id":"66a351e5a9b43bffac47247e","createdAt":"2024-07-26T07:36:05.402Z","updatedAt":"2024-07-26T07:36:05.402Z","__v":0}
 2024-07-26 13:06:07 [32minfo[39m: Batch booking updates: [{"action":"create","booking":{"customerName":"John Doe","roomNumber":101,"checkInDate":"2024-08-01T14:00:00.000Z","checkOutDate":"2024-08-07T11:00:00.000Z","status":"Confirmed","totalAmount":500,"paymentStatus":"Pending","_id":"66a351e5a9b43bffac47247e","createdAt":"2024-07-26T07:36:05.402Z","updatedAt":"2024-07-26T07:36:05.402Z","__v":0}}]
+2024-07-26 13:13:17 [32minfo[39m: Connected to WebSocket server
+2024-07-26 13:13:35 [32minfo[39m: Connected to WebSocket server
+2024-07-26 13:14:08 [32minfo[39m: Connected to WebSocket server
+2024-07-26 13:15:43 [32minfo[39m: Connected to WebSocket server
