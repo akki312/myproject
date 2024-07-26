@@ -11,6 +11,7 @@ const BUFFER_SIZE = 5; // Set the buffer size
 function emitBufferedUpdates() {
   if (bookingBuffer.length > 0) {
     socket.emit('bookingBatchUpdated', bookingBuffer); // Emit the buffered updates
+    socket.send(bookingBuffer); // Send the buffered updates using send method
     logger.info(`Batch booking updates: ${JSON.stringify(bookingBuffer)}`);
     bookingBuffer = []; // Clear the buffer
   }
@@ -108,6 +109,15 @@ async function deleteBooking(id) {
 
 // Set an interval to emit any remaining updates in the buffer
 setInterval(emitBufferedUpdates, 5000); // Adjust the interval as needed
+
+// Using socket event handlers
+socket.on('connect', () => {
+  logger.info('Connected to WebSocket server');
+});
+
+socket.on('disconnect', () => {
+  logger.warn('Disconnected from WebSocket server');
+});
 
 module.exports = {
   createBooking,
