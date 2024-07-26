@@ -19,7 +19,7 @@ services:
     environment:
       - EXPRESS_PORT=3000
       - EXPRESS_HOST=0.0.0.0
-      - MONGO_URI=mongodb://mongo:27017/bookingDB
+      - MONGO_URI=mongodb+srv://akshithsistla:ccipnWsoxp5NQ0nm@cluster0.iljkeyx.mongodb.net/projectdatabase
 
     volumes:
       - /home/akshith/desktop/my project

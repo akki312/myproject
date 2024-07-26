@@ -1,7 +1,7 @@
 const Booking = require('../models/booking');
-const io = require('socket.io-client'); // Client-side Socket.io
-const socket = io('http://localhost:3000'); // Connect to the WebSocket server
-const logger = require('../loaders/logger'); // Import the logger
+const io = require('socket.io-client');
+const socket = io('http://localhost:3000');
+const logger = require('../loaders/logger');
 
 // Buffer to store booking updates
 let bookingBuffer = [];
@@ -21,7 +21,7 @@ async function createBooking(data) {
   try {
     const booking = new Booking(data);
     await booking.save();
-    bookingBuffer.push(booking);
+    bookingBuffer.push({ action: 'create', booking });
     logger.info(`Booking created: ${JSON.stringify(booking)}`);
 
     if (bookingBuffer.length >= BUFFER_SIZE) {
@@ -76,7 +76,7 @@ async function updateBooking(id, updateData) {
   try {
     const updatedBooking = await Booking.findByIdAndUpdate(id, updateData, { new: true, runValidators: true });
     if (updatedBooking) {
-      bookingBuffer.push(updatedBooking);
+      bookingBuffer.push({ action: 'update', booking: updatedBooking });
       logger.info(`Booking updated: ${JSON.stringify(updatedBooking)}`);
 
       if (bookingBuffer.length >= BUFFER_SIZE) {
@@ -94,11 +94,11 @@ async function updateBooking(id, updateData) {
 async function deleteBooking(id) {
   try {
     await Booking.findByIdAndDelete(id);
-    bookingBuffer.push({ id, deleted: true });
+    bookingBuffer.push({ action: 'delete', id });
     logger.info(`Booking deleted with ID: ${id}`);
 
     if (bookingBuffer.length >= BUFFER_SIZE) {
-        emitBufferedUpdates();
+      emitBufferedUpdates();
     }
   } catch (error) {
     logger.error('Error deleting booking: ' + error.message);
