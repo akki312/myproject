@@ -119,6 +119,12 @@ socket.on('disconnect', () => {
   logger.warn('Disconnected from WebSocket server');
 });
 
+// Handle incoming messages efficiently
+socket.on('bookingBatchUpdated', (data) => {
+  logger.info(`Received batch booking updates: ${JSON.stringify(data)}`);
+  // Process the received data promptly
+});
+
 module.exports = {
   createBooking,
   getAllBookings,
