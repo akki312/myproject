@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { generateToken } = require('../ut');
+
 const { verifyToken } = require('../lib/util');
 
 // Dummy login route to generate token
