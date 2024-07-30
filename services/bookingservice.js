@@ -40,6 +40,7 @@ async function createBooking(data) {
 async function getAllBookings() {
   try {
     const bookings = await Booking.find();
+    console.log('////data')
     logger.info('Retrieved all bookings');
     return bookings;
   } catch (error) {
