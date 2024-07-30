@@ -5,7 +5,8 @@ const socketIo = require('socket.io');
 const connectDB = require('./loaders/mongoose');
 const bookingRoutes = require('./routes/bookingroutes');
 const roomRoutes = require('./routes/room');
-const customerRoutes = require('./routes/customer'); // Assuming you have a route file for rooms
+const customerRoutes = require('./routes/customer');
+const authRoutes = require('./routes/authenticationroutes'); // Assuming you have a route file for rooms
 const logger = require('./loaders/logger')
 
 const app = express();
@@ -16,7 +17,8 @@ const io = socketIo(server);
 app.use(express.json());
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/rooms', roomRoutes); 
-app.use('/api/customer', customerRoutes)// Add the room routes
+app.use('/api/customer', customerRoutes)
+app.use('/api/authentication', authRoutes);// Add the room routes
 
 // WebSocket connection handler
 io.on('connection', (socket) => {

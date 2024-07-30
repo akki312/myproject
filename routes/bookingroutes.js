@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const bookingService = require('../services/bookingservice');
+const { verifyToken } = require('../lib/util');
 
 // Create a new booking
-router.post('/newbooking', async (req, res) => {
+router.post('/newbooking', verifyToken, async (req, res) => {
   try {
     const booking = await bookingService.createBooking(req.body);
     req.io.emit('bookingCreated', booking); // Notify clients of the new booking
@@ -14,7 +15,7 @@ router.post('/newbooking', async (req, res) => {
 });
 
 // Get all bookings
-router.get('/allbookings', async (req, res) => {
+router.get('/allbookings', verifyToken, async (req, res) => {
   try {
     const bookings = await bookingService.getAllBookings();
     res.status(200).json(bookings);
@@ -24,7 +25,7 @@ router.get('/allbookings', async (req, res) => {
 });
 
 // Get bookings by status
-router.get('/status/:status', async (req, res) => {
+router.get('/status/:status', verifyToken, async (req, res) => {
   try {
     const { status } = req.params;
     const bookings = await bookingService.getBookingsByStatus(status);
@@ -35,7 +36,7 @@ router.get('/status/:status', async (req, res) => {
 });
 
 // Get a single booking by ID
-router.get('/getsinglebyid/:id', async (req, res) => { // Corrected the route
+router.get('/getsinglebyid/:id', verifyToken, async (req, res) => { // Corrected the route
   try {
     const booking = await bookingService.getBookingById(req.params.id);
     if (!booking) {
@@ -48,7 +49,7 @@ router.get('/getsinglebyid/:id', async (req, res) => { // Corrected the route
 });
 
 // Update a booking
-router.post('/updatebyid/:id', async (req, res) => { // Corrected the route
+router.post('/updatebyid/:id', verifyToken, async (req, res) => { // Corrected the route
   try {
     const booking = await bookingService.updateBooking(req.params.id, req.body);
     if (!booking) {
@@ -62,7 +63,7 @@ router.post('/updatebyid/:id', async (req, res) => { // Corrected the route
 });
 
 // Delete a booking
-router.post('/deletebyid/:id', async (req, res) => { // Corrected the route
+router.post('/deletebyid/:id', verifyToken, async (req, res) => { // Corrected the route
   try {
     await bookingService.deleteBooking(req.params.id);
     req.io.emit('bookingDeleted', { id: req.params.id }); // Notify clients of the deleted booking
