@@ -10,14 +10,14 @@ const BUFFER_SIZE = 5; // Set the buffer size
 // Function to emit updates in batches
 function emitBufferedUpdates() {
   if (bookingBuffer.length > 0) {
-    socket.emit('bookingBatchUpdated', bookingBuffer); // Emit the buffered updates
-    socket.send(bookingBuffer); // Send the buffered updates using send method
+    socket.emit('bookingBatchUpdated', bookingBuffer); 
+    socket.send(bookingBuffer); 
     logger.info(`Batch booking updates: ${JSON.stringify(bookingBuffer)}`);
-    bookingBuffer = []; // Clear the buffer
+    bookingBuffer = []; 
   }
 }
 
-// Create a new booking
+
 async function createBooking(data) {
   try {
     const booking = new Booking(data);
